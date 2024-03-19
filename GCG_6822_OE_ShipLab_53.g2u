@@ -1,0 +1,278 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.F_PreProc..Create(BaseForm)
+Gui.F_PreProc..Caption("Shipping Label 6822")
+Gui.F_PreProc..Size(8595,2115)
+Gui.F_PreProc..MinX(7290)
+Gui.F_PreProc..MinY(2580)
+Gui.F_PreProc..Position(0,0)
+Gui.F_PreProc..AlwaysOnTop(False)
+Gui.F_PreProc..FontName("Tahoma")
+Gui.F_PreProc..FontSize(8.25)
+Gui.F_PreProc..ControlBox(True)
+Gui.F_PreProc..MaxButton(True)
+Gui.F_PreProc..MinButton(True)
+Gui.F_PreProc..MousePointer(0)
+Gui.F_PreProc..Moveable(True)
+Gui.F_PreProc..Sizeable(False)
+Gui.F_PreProc..ShowInTaskBar(True)
+Gui.F_PreProc..TitleBar(True)
+Gui.F_PreProc..Event(UnLoad,F_PreProc_UnLoad)
+Gui.F_PreProc.txtPartNo.Create(TextBox,"",True,1500,300,0,255,1185,True,0,"Tahoma",8.25,-2147483624,1)
+Gui.F_PreProc.txtQty.Create(TextBox,"",True,1500,300,0,2415,1185,True,0,"Tahoma",8.25,-2147483624,1)
+Gui.F_PreProc.txtQty.NumericOnly(2)
+Gui.F_PreProc.txtPO.Create(TextBox,"",True,1500,300,0,4005,1185,True,0,"Tahoma",8.25,-2147483624,1)
+Gui.F_PreProc.txtPO.NumericOnly(2)
+Gui.F_PreProc.txtPOLine.Create(TextBox,"",True,1500,300,0,5610,1185,True,0,"Tahoma",8.25,-2147483624,1)
+Gui.F_PreProc.txtPOLine.NumericOnly(2)
+Gui.F_PreProc.lblPartNo.Create(Label,"Part Number",True,900,195,0,285,930,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PreProc.lblPartNo.BorderStyle(0)
+Gui.F_PreProc.lblQty.Create(Label,"Qty",True,270,195,0,2415,930,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PreProc.lblQty.BorderStyle(0)
+Gui.F_PreProc.lblPO.Create(Label,"PO Number",True,810,195,0,4005,930,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PreProc.lblPO.BorderStyle(0)
+Gui.F_PreProc.lblLine.Create(Label,"PO Line Number",True,1140,195,0,5610,930,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PreProc.lblLine.BorderStyle(0)
+Gui.F_PreProc.cmdPrint.Create(Button)
+Gui.F_PreProc.cmdPrint.Enabled(True)
+Gui.F_PreProc.cmdPrint.Visible(True)
+Gui.F_PreProc.cmdPrint.Zorder(0)
+Gui.F_PreProc.cmdPrint.Size(1125,345)
+Gui.F_PreProc.cmdPrint.Position(7290,1155)
+Gui.F_PreProc.cmdPrint.Caption("Print")
+Gui.F_PreProc.cmdPrint.FontName("Tahoma")
+Gui.F_PreProc.cmdPrint.FontSize(8.25)
+Gui.F_PreProc.cmdPrint.Event(Click,cmdPrint_Click)
+Gui.F_PreProc.cmdPartLookup.Create(Button)
+Gui.F_PreProc.cmdPartLookup.Enabled(True)
+Gui.F_PreProc.cmdPartLookup.Visible(True)
+Gui.F_PreProc.cmdPartLookup.Zorder(0)
+Gui.F_PreProc.cmdPartLookup.Size(405,345)
+Gui.F_PreProc.cmdPartLookup.Position(1845,1170)
+Gui.F_PreProc.cmdPartLookup.Caption("")
+Gui.F_PreProc.cmdPartLookup.FontName("Tahoma")
+Gui.F_PreProc.cmdPartLookup.FontSize(8.25)
+Gui.F_PreProc.cmdPartLookup.SvgPicture("icon_browser_color")
+Gui.F_PreProc.cmdPartLookup.Event(Click,cmdPartLookup_Click)
+Gui.F_PreProc.txtSO.Create(TextBox,"",True,1500,300,0,255,345,True,0,"Tahoma",8.25,,1)
+Gui.F_PreProc.lblSONo.Create(Label,"Shipping Order Number",True,1665,195,0,285,90,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PreProc.lblSONo.BorderStyle(0)
+Gui.F_PreProc.cmdSOLookup.Create(Button)
+Gui.F_PreProc.cmdSOLookup.Enabled(True)
+Gui.F_PreProc.cmdSOLookup.Visible(True)
+Gui.F_PreProc.cmdSOLookup.Zorder(0)
+Gui.F_PreProc.cmdSOLookup.Size(405,345)
+Gui.F_PreProc.cmdSOLookup.Position(1845,330)
+Gui.F_PreProc.cmdSOLookup.Caption("")
+Gui.F_PreProc.cmdSOLookup.FontName("Tahoma")
+Gui.F_PreProc.cmdSOLookup.FontSize(8.25)
+Gui.F_PreProc.cmdSOLookup.SvgPicture("icon_browser_color")
+Gui.F_PreProc.cmdSOLookup.Event(Click,cmdSOLookup_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Variable.Global.iBIRunID.Declare(Long,0)
+Variable.Global.iBILogID.Declare(Long,0)
+Variable.Global.iBIRptID.Declare(Long,0)
+
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'designed by Don Finch
+'Preprocessor for BI RptID 53
+
+'ARC 4799 ---> ARC 6822
+
+'Modified by Sam S. 7/5/2022
+'Quote:13582-0
+'SUPERIOR MACHINE, INC.
+'The customer is needing specific shipping labels for one of their customers.
+
+
+F.Intrinsic.Control.Try
+
+v.Local..BulkDeclareString(sError,sOrder,sSql,sRet)
+
+
+
+'set passed shipping label report id
+'V.Global.iBIRptID.Set(v.Passed.009001)
+
+'Starting BI Logging
+
+'open connection
+F.ODBC.Connection!conx.OpenCompanyConnection
+
+
+
+gui.F_PreProc..Show
+
+
+
+F.Intrinsic.Control.Catch
+	
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} at {6} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Ambient.CurrentSubroutine, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Ambient.Now, V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(F_PreProc_UnLoad)
+
+F.Intrinsic.Control.EndTry
+
+Program.Sub.Main.End
+
+Program.Sub.cmdPartLookup_Click.Start
+V.Local.sError.Declare
+F.Intrinsic.Control.Try
+
+V.Local.sTitles.Declare
+V.Local.iWidths.Declare
+V.Local.sRet.Declare
+
+F.Intrinsic.String.Split("Part*!*Location*!*Description","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("1000*!*200*!*1000","*!*",V.Local.iWidths)
+
+
+F.Intrinsic.UI.Browser("Inventory Parts Browser","CONX","Select RTRIM(PART) PART, RTRIM(LOCATION) LOCATION, RTRIM(DESCRIPTION) DESCRIPTION from V_INVENTORY_MSTR",V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+F.Intrinsic.Control.If(V.Local.sRet.IsNotCancel)
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	Gui.F_PreProc.txtPartNo.Text(V.Local.sRet(0))
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} at {6} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Ambient.CurrentSubroutine, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Ambient.Now, V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(F_PreProc_UnLoad)
+	
+
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdPartLookup_Click.End
+
+Program.Sub.cmdPrint_Click.Start
+V.Local.sSql.Declare
+V.Local.sError.Declare
+V.Local.sPart.Declare
+V.Local.sPartDesc.Declare
+V.Local.sQty.Declare
+
+F.Intrinsic.Control.Try
+
+'Get run ID
+F.Global.BI.GetRunID(V.Global.iBIRunID)
+
+'Starting BI Logging
+F.Global.BI.GetIDFromName("GCG_6822_OE_ShipLab_53.lab",v.Global.iBIRptID)
+F.Global.BI.StartLogging(V.Global.iBIRunID,v.Global.iBIRptID,-1,"",V.Global.iBILogID)
+
+V.Local.sPart.Set(V.Screen.F_PreProc!txtPartNo.Text)
+F.Intrinsic.String.RTrim(V.Local.sPart,V.Local.sPart)
+F.Intrinsic.String.Build("Select Top 1 RTRIM(DESCRIPTION) as DESCRIPTION from V_INVENTORY_MSTR where PART like '{0}%'",V.Local.sPart.PSQLFriendly,V.Local.sSql)
+F.ODBC.Connection!CONX.ExecuteAndReturn(V.Local.sSql,V.Local.sSql)
+V.Local.sPartDesc.Set(V.Local.sSql)
+
+'tables currently in this query (for adding fields later)
+'V_BOL_PACK_DTL PDT
+'V_SHIPMENT_HEADER SH 
+'V_SHIPMENT_SHIPTO ST 
+'V_CUSTOMER_MASTER CM 
+'V_INVENTORY_MST2 I2
+'V_CUST_FORM_INFO CFI
+'F.Intrinsic.String.Build("SELECT PDT.ORDER_NO, PDT.ORDER_SEQ, LEFT(PDT.ORDER_LINE,3) as ORDER_LINE, PDT.PART, PDT.LOCN, PDT.PART_DESC, I2.TEXT_INFO1, I2.TEXT_INFO2, I2.DESCRIPTION_2, I2.DESCRIPTION_3, PDT.CRTN_NO, SH.CUSTOMER_PO, PDT.QTY, ST.NAME_CUSTOMER_SHIP, PDT.PCK_NO, PDT.BIN, PDT.CUST_PART, PDT.HEAT, PDT.LBS_PER_PC, PDT.LOT, PDT.PLLT_NO, PDT.SEQ, PDT.SERIAL, PDT.WAYBILL_NO, SH.CARTONS, SH.CUSTOMER, CM.NAME_CUSTOMER, CM.ADDRESS1, CM.ADDRESS2, CM.CITY, CM.STATE, CM.ZIP, CM.COUNTRY, SH.DATE_DUE, SH.DATE_SHIPPED, SH.FACILITY, CFI.EXTERNAL_ID, ST.ADDRESS_1_SHIP, ST.ADDRESS_2_SHIP, ST.ADDRESS_3_SHIP, ST.ADDRESS_4_SHIP, ST.ADDRESS_5_SHIP, ST.ATTENTION_SHIP, ST.CITY_SHIP, ST.STATE_SHIP, ST.CODE_ZIP_SHIP FROM V_BOL_PACK_DTL AS PDT LEFT JOIN V_SHIPMENT_HEADER AS SH ON PDT.ORDER_NO = SH.ORDER_NO AND PDT.ORDER_SEQ = SH.ORDER_SUFFIX LEFT JOIN V_SHIPMENT_SHIPTO AS ST ON SH.ORDER_NO = ST.ORDER_NO AND SH.ORDER_SUFFIX = ST.ORDER_SUFFIX AND SH.SHIP_ID = ST.SHIP_ID LEFT JOIN V_CUSTOMER_MASTER AS CM ON SH.CUSTOMER = CM.CUSTOMER LEFT JOIN V_INVENTORY_MST2 AS I2 ON PDT.PART = I2.PART AND PDT.LOCN = I2.LOCATION LEFT JOIN V_CUST_FORM_INFO CFI ON CFI.CUSTOMER = CM.CUSTOMER WHERE  PDT.PCK_NO = '{0}' ORDER BY PDT.ORDER_NO, PDT.ORDER_SEQ, PDT.ORDER_LINE, PDT.CRTN_NO",V.Local.sOrder,V.Local.sSql)
+
+
+'f.Data.DataTable.CreateFromSQL("LABEL","CONX",V.Local.sSql,True)
+
+F.Data.Datatable.Create("LABEL",True)
+F.Data.Datatable.AddColumn("LABEL","PART","String","")
+F.Data.Datatable.AddColumn("LABEL","PART_DESC","String","")
+F.Data.Datatable.AddColumn("LABEL","QTY","String","")
+F.Data.Datatable.AddColumn("LABEL","CUSTOMER_PO","String","")
+F.Data.Datatable.AddColumn("LABEL","ORDER_LINE","String","")
+
+F.Intrinsic.String.Left(V.Local.sPart,17,V.Local.sPart)
+F.Intrinsic.String.RTrim(V.Local.sPart,V.Local.sPart)
+
+V.Local.sQty.Set(V.Screen.F_PreProc!txtQty.Text)
+F.Intrinsic.String.Split(V.Local.sQTY,".",V.Local.sQty)
+
+F.Data.Datatable.AddRow("LABEL","PART",V.Local.sPart,"PART_DESC",V.Local.sPartDesc,"QTY",V.Local.sQty(0),"CUSTOMER_PO",V.Screen.F_PreProc!txtPO.Text,"ORDER_LINE",V.Screen.F_PreProc!txtPOLine.Text)
+
+f.Global.BI.StopLogging(v.Global.iBILogID)
+f.Global.BI.PrintCodesoftLabelFromDataTable(v.Global.iBIRunID,v.Global.iBILogID,"LABEL","",True)
+
+F.Data.Datatable.Close("LABEL")
+
+
+F.Intrinsic.Control.Catch
+	
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} at {6} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Ambient.CurrentSubroutine, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Ambient.Now, V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(F_PreProc_UnLoad)
+
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdPrint_Click.End
+
+Program.Sub.F_PreProc_UnLoad.Start
+V.Local.sError.Declare
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.ODBC.CONX.Exists,=,1)
+	F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.Catch
+	
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} at {6} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Ambient.CurrentSubroutine, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Ambient.Now, V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End()
+
+F.Intrinsic.Control.EndTry
+Program.Sub.F_PreProc_UnLoad.End
+
+Program.Sub.cmdSOLookup_Click.Start
+V.Local.sError.Declare
+F.Intrinsic.Control.Try
+
+V.Local.sTitles.Declare
+V.Local.iWidths.Declare
+V.Local.sRet.Declare
+
+F.Intrinsic.String.Split("ORDER_NO*!*ORDER_SEQ*!*ORDER_LINE*!*QTY*!*PART*!*LOCN*!*PART_DESC*!*CUSTOMER*!*NAME_CUSTOMER*!*CRTN_NO*!*CUSTOMER_PO*!*PCK_NO*!*PLLT_NO*!*WAYBILL_NO","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000*!*2000","*!*",V.Local.iWidths)
+
+
+
+'F.Intrinsic.UI.Browser("Shipping Label, SO Browser","CONX","SELECT PDT.ORDER_NO, PDT.ORDER_SEQ, LEFT(PDT.ORDER_LINE,3) as ORDER_LINE, PDT.QTY, PDT.PART, PDT.LOCN, PDT.PART_DESC, SH.CUSTOMER, CM.NAME_CUSTOMER, PDT.CRTN_NO, SH.CUSTOMER_PO, PDT.PCK_NO, PDT.PLLT_NO, PDT.WAYBILL_NO FROM V_BOL_PACK_DTL AS PDT LEFT JOIN V_SHIPMENT_HEADER AS SH ON PDT.ORDER_NO = SH.ORDER_NO AND PDT.ORDER_SEQ = SH.ORDER_SUFFIX LEFT JOIN V_CUSTOMER_MASTER AS CM ON SH.CUSTOMER = CM.CUSTOMER WHERE SH.CUSTOMER = 'KINZE' ORDER BY PDT.ORDER_NO, PDT.ORDER_SEQ, PDT.ORDER_LINE, PDT.CRTN_NO",V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+'F.Intrinsic.UI.Browser("Shipping Label, SO Browser","CONX","SELECT SL.ORDER_NO, SL.ORDER_SEQ, LEFT(SL.ORDER_LINE,3) as ORDER_LINE, PDT.QTY, PDT.PART, PDT.LOCN, PDT.PART_DESC, SH.CUSTOMER, CM.NAME_CUSTOMER, PDT.CRTN_NO, SH.CUSTOMER_PO, PDT.PCK_NO, PDT.PLLT_NO, PDT.WAYBILL_NO FROM V_SHIPMENT_LINES SL LEFT JOIN V_BOL_PACK_DTL AS PDT ON PDT.ORDER_NO = SL.ORDER_NO AND PDT.ORDER_SEQ = SL.ORDER_SUFFIX AND PDT.ORDER_LINE = SL.ORDER_REC LEFT JOIN V_SHIPMENT_HEADER AS SH ON PDT.ORDER_NO = SH.ORDER_NO AND PDT.ORDER_SEQ = SH.ORDER_SUFFIX LEFT JOIN V_CUSTOMER_MASTER AS CM ON SH.CUSTOMER = CM.CUSTOMER ORDER BY PDT.ORDER_NO, PDT.ORDER_SEQ, PDT.ORDER_LINE, PDT.CRTN_NO",V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+F.Intrinsic.UI.Browser("Shipping Label, SO Browser","CONX","SELECT SL.ORDER_NO, SL.ORDER_SUFFIX, LEFT(SL.ORDER_REC,3) as ORDER_LINE, PDT.QTY, PDT.PART, PDT.LOCN, PDT.PART_DESC, SH.CUSTOMER, CM.NAME_CUSTOMER, PDT.CRTN_NO, SH.CUSTOMER_PO, PDT.PCK_NO, PDT.PLLT_NO, PDT.WAYBILL_NO FROM V_SHIPMENT_LINES SL LEFT JOIN V_BOL_PACK_DTL AS PDT ON PDT.ORDER_NO = SL.ORDER_NO AND PDT.ORDER_SEQ = SL.ORDER_SUFFIX AND PDT.ORDER_LINE = SL.ORDER_REC LEFT JOIN V_SHIPMENT_HEADER AS SH ON PDT.ORDER_NO = SH.ORDER_NO AND PDT.ORDER_SEQ = SH.ORDER_SUFFIX LEFT JOIN V_CUSTOMER_MASTER AS CM ON SH.CUSTOMER = CM.CUSTOMER ORDER BY PDT.ORDER_NO, PDT.ORDER_SEQ, PDT.ORDER_LINE, PDT.CRTN_NO",V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+
+
+F.Intrinsic.Control.If(V.Local.sRet.IsNotCancel)
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	gui.F_PreProc.txtQty.Text(V.Local.sRet(3))
+	gui.F_PreProc.txtPartNo.Text(V.Local.sRet(4))
+	gui.F_PreProc.txtSO.Text(V.Local.sRet(0))
+	gui.F_PreProc.txtPO.Text(V.Local.sRet(10))
+	gui.F_PreProc.txtPOLine.Text(V.Local.sRet(2))
+F.Intrinsic.Control.EndIf
+
+
+
+F.Intrinsic.Control.Catch
+	
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} at {6} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Ambient.CurrentSubroutine, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Ambient.Now, V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(F_PreProc_UnLoad)
+
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdSOLookup_Click.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_4799_OE_ShipLab_53$}$DFINCH$}$12/4/2017 3:28:44 PM$}$False
+${$5$}$2.0.0.0$}$2
+${$6$}$sstanka$}$20220721113653973$}$mP+zz5Tw3sT2/nyap+FbWm4triMPqjXDi6fqqArDjqBjSyarrg0esIAW5U9w03YBouiTzcR6f9s=
+Program.Sub.Comments.End
+
